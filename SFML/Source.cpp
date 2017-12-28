@@ -31,7 +31,7 @@ void attack() {
 }
 
 void animate() {
-	if (animCounter == 0) {
+	if (animCounter == 0 && (action!="walk"||abs(speed.x)+abs(speed.y)>1)) { //new frame unless standing still
 		anim++;
 		if (action == "walk") {
 			animCounter = 10;
@@ -48,7 +48,8 @@ void animate() {
 		}
 		else if (action == "cooldown") {
 			action = "walk";
-			animCounter = 10;
+			anim = 1;
+			animCounter = 1;
 		}
 	}
 	if (animCounter > 0)
@@ -59,14 +60,16 @@ void input() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && speed.x >-15)
 	{
 		speed.x--;
-		if (state == 2)
+		if (state == 2) {
 			sprite.setRotation(-90);
+		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && speed.x <15)
 	{
 		speed.x++;
-		if(state==2)		
+		if (state == 2) {
 			sprite.setRotation(90);
+		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
@@ -123,7 +126,7 @@ void draw(sf::RenderWindow& window) {
 			character.loadFromFile("walk1.png"); //default
 			anim = 1;
 			animCounter = 5;
-			action = "walk";
+			action = "cooldown";
 		}
 	sprite.setTexture(character);
 	sprite.setPosition(player.getPosition());
@@ -232,8 +235,7 @@ int main()
 		if(loop%physicsDivider==0)
 			physics();
 		if (loop % (physicsDivider / 4) == 0) {
-			if(action!="walk"||abs(speed.x)+abs(speed.y)>1)
-				animate();
+			animate();
 		}
 		if (loop%fpsDivider==0) {
 			draw(window);
